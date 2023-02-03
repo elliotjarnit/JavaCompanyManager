@@ -45,6 +45,19 @@ public class Team
         employees.add(member);
     }
 
+    public int getAverageSalary() {
+        if (employees.size() == 0) return 0;
+        int total = 0;
+        for (int i = 0; i < employees.size(); i++) {
+            total += employees.get(i).getSalary();
+        }
+        return total / employees.size();
+    }
+
+    public int getNumberOfEmployees() {
+        return employees.size();
+    }
+
     public void promote(String name, String newRole){
         for (int i = 0; i < employees.size(); i++){
             if (this.employees.get(i).getName().equals(name)){

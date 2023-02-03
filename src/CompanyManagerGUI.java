@@ -9,7 +9,9 @@ public class CompanyManagerGUI {
     private static Panel leftSidePanel;
     private static List employeeList;
     private static Panel companyPanel;
+    private static Label companyLabel;
     private static Panel employeePanel;
+    private static Label employeeLabel;
     private static Choice companySelector;
     private static MenuBar menuBar;
     private static Menu menuBarFile;
@@ -73,15 +75,18 @@ public class CompanyManagerGUI {
                     selectedEmployeeIndex = -1;
                     updateEmployeeList();
                     updateEmployeePanel();
+                    updateCompanyPanel();
                 });
             }
         };
         companyPanel.add(companySelector);
+        companyLabel = new Label("No company selected");
+        companyPanel.add(companyLabel);
 
         // Employee
         employeePanel = new Panel();
-        employeePanel.setLayout(new FlowLayout());
-        employeePanel.add(new Label("No employee selected"));
+        employeeLabel = new Label("No employee selected");
+        employeePanel.add(employeeLabel);
 
         // Right side
         employeeList = new List(10) {
@@ -195,10 +200,12 @@ public class CompanyManagerGUI {
                     // Set teams selector options
                     companies.add(new Team(companyNameField.getText()));
 
-                    updateCompanyList();
+                    updateCompanySelector();
                     selectedCompanyIndex = companies.size() - 1;
                     companySelector.select(selectedCompanyIndex);
                     updateEmployeeList();
+                    updateCompanyPanel();
+                    updateEmployeePanel();
                     newCompanyDialog.setVisible(false);
                 });
             }
@@ -244,11 +251,12 @@ public class CompanyManagerGUI {
     }
 
     public static void updateEmployeePanel() {
-        employeePanel.removeAll();
+        employeePanel.remove(employeeLabel);
+        String label;
         if (selectedEmployeeIndex < 0) {
-            employeePanel.add(new Label("No employee selected"));
+            label = "No employee selected";
         } else {
-            String label = "<html>";
+            label = "<html>";
             label += "Employee Info";
             label += "<br/><br/>ID: ";
             label += companies.get(selectedCompanyIndex).getAllMembers()[selectedEmployeeIndex].getId();
@@ -261,16 +269,39 @@ public class CompanyManagerGUI {
             label += "<br/>Salary: ";
             label += "$" + companies.get(selectedCompanyIndex).getAllMembers()[selectedEmployeeIndex].getSalary();
             label += "</html>";
-            employeePanel.add(new Label(label));
         }
+        employeeLabel = new Label(label);
+        employeePanel.add(employeeLabel);
         employeePanel.revalidate();
         employeePanel.repaint();
     }
 
-    public static void updateCompanyList() {
+    public static void updateCompanySelector() {
         companySelector.removeAll();
         for (Team t : companies) {
             companySelector.add(t.getName());
         }
+    }
+
+    public static void updateCompanyPanel() {
+        companyPanel.remove(companyLabel);
+        String label;
+        if (selectedCompanyIndex < 0) {
+            label = "No company selected";
+        } else {
+            label = "<html>";
+            label += "Company Info";
+            label += "<br/><br/>Name: ";
+            label += companies.get(selectedCompanyIndex).getName();
+            label += "<br/>Number of Employees: ";
+            label += companies.get(selectedCompanyIndex).getNumberOfEmployees();
+            label += "<br/>Average Salary: ";
+            label += "$" + companies.get(selectedCompanyIndex).getAverageSalary();
+            label += "</html>";
+        }
+        companyLabel = new Label(label);
+        companyPanel.add(companyLabel);
+        companyPanel.revalidate();
+        companyPanel.repaint();
     }
 }
