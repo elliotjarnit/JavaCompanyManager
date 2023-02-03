@@ -1,61 +1,51 @@
-import java.io.FileWriter;
-import java.io.File;
-import java.io.IOException;
-import java.util.Scanner;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
 
 // Need to finish
 public class SaveManager {
-//    public static void saveCompany(Team[] companies, String filepath) {
-//        try {
-//            File file = new File(filepath);
-//            if (file.createNewFile()) {
-//                System.out.println("File created: " + file.getName());
-//            } else {
-//                System.out.println("File already exists.");
-//            }
-//            FileWriter filewriter = new FileWriter(filepath);
-//            String data = "[";
-//            for (int i = 0; i < companies.length; i++) {
-//                data += "{";
-//                data += "\"name\":\"" + companies[i].getName() + "\",";
-//                data += "\"id\":" + companies[i].getId() + ",";
-//                data += "\"members\":[";
-//                Member[] members = companies[i].getAllMembers();
-//                for (int j = 0; j < members.length; j++) {
-//                    data += "{";
-//                    data += "\"name\":\"" + members[j].getName() + "\",";
-//                    data += "\"id\":" + members[j].getId() + ",";
-//                    data += "\"role\":\"" + members[j].getRole() + "\"";
-//                    data += "}";
-//                    if (j != members.length - 1) {
-//                        data += ",";
-//                    }
-//                }
-//                data += "]";
-//                data += "}";
-//                if (i != companies.length - 1) {
-//                    data += ",";
-//                }
-//            }
-//            data += "]";
-//            filewriter.write(data);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public static void loadCompany(String filepath) {
-//        try {
-//            File file = new File(filepath);
-//            Scanner filescanner = new Scanner(file);
-//            String data = "";
-//            while (filescanner.hasNextLine()) {
-//                data += filescanner.nextLine();
-//            }
-//            filescanner.close();
-//            for ()
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    public static void saveCompany(Team[] companies, String filepath) {
+        try {
+            FileOutputStream fileOut = new FileOutputStream(filepath);
+            ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+            for (int i = 0; i < companies.length; i++) {
+                objectOut.writeObject(companies[i]);
+            }
+            objectOut.close();
+            System.out.println("The Object  was succesfully written to a file");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static Team[] loadCompany(String filepath) {
+        try {
+            FileInputStream fileIn = new FileInputStream(filepath);
+            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+            ArrayList<Team> companies = new ArrayList<Team>();
+            // Get companies from file
+            while (true) {
+                try {
+                    Team company = (Team) objectIn.readObject();
+                    companies.add(company);
+                } catch (Exception ex) {
+                    break;
+                }
+            }
+            objectIn.close();
+            System.out.println("The Object has been read from the file");
+
+            // Convert ArrayList to array
+            Team[] companiesArray = new Team[companies.size()];
+            for (int i = 0; i < companies.size(); i++) {
+                companiesArray[i] = companies.get(i);
+            }
+            return companiesArray;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
 }

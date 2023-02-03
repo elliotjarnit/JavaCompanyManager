@@ -1,6 +1,7 @@
 import java.util.ArrayList;
+import java.io.Serializable;
 
-public class Team
+public class Team implements Serializable
 {
     private String name;
     private ArrayList<Member> employees;

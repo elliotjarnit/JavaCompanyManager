@@ -108,14 +108,40 @@ public class CompanyManagerGUI {
             {
                 addActionListener(e -> {
                     FileDialog fileDialog = new FileDialog(window, "Save", FileDialog.SAVE);
-                    fileDialog.setFilenameFilter((dir, name) -> name.endsWith(".kick"));
+                    fileDialog.setFilenameFilter((dir, name) -> name.endsWith(".mrkick"));
                     fileDialog.setVisible(true);
                     if (fileDialog.getFile() != null) {
                         String filename = fileDialog.getDirectory() + fileDialog.getFile();
-                        if (!filename.endsWith(".kick")) {
-                            filename += ".kick";
+                        if (!filename.endsWith(".mrkick")) {
+                            filename += ".mrkick";
                         }
-//                        SaveManager.saveCompany(companies, filename);
+                        Team[] companiesArray = new Team[companies.size()];
+                        companiesArray = companies.toArray(companiesArray);
+                        SaveManager.saveCompany(companiesArray, filename);
+                    }
+                });
+            }
+        });
+        menuBarFile.add(new MenuItem("Open") {
+            {
+                addActionListener(e -> {
+                    FileDialog fileDialog = new FileDialog(window, "Save", FileDialog.LOAD);
+                    fileDialog.setFilenameFilter((dir, name) -> name.endsWith(".mrkick"));
+                    fileDialog.setVisible(true);
+                    if (fileDialog.getFile() != null) {
+                        String filename = fileDialog.getDirectory() + fileDialog.getFile();
+                        if (filename.endsWith(".mrkick")) {
+                            Team[] companiesArray = SaveManager.loadCompany(filename);
+                            companies.clear();
+                            for (Team t : companiesArray) {
+                                companies.add(t);
+                            }
+                            selectedCompanyIndex = -1;
+                            selectedEmployeeIndex = -1;
+                            updateCompanySelector();
+                            updateEmployeePanel();
+                            updateCompanyPanel();
+                        }
                     }
                 });
             }
@@ -291,6 +317,8 @@ public class CompanyManagerGUI {
         } else {
             label = "<html>";
             label += "Company Info";
+            label += "<br/><br/>ID: ";
+            label += companies.get(selectedCompanyIndex).getId();
             label += "<br/><br/>Name: ";
             label += companies.get(selectedCompanyIndex).getName();
             label += "<br/>Number of Employees: ";

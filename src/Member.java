@@ -1,6 +1,6 @@
-import java.util.ArrayList;
+import java.io.Serializable;
 
-public class Member
+public class Member implements Serializable
 {
     private String name;
     private int id;
