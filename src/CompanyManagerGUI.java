@@ -12,6 +12,9 @@ public class CompanyManagerGUI {
     private static Label companyLabel;
     private static Panel employeePanel;
     private static Label employeeLabel;
+    private static Panel employeeControls;
+    private static Button buttonChangeRole;
+    private static Button buttonFire;
     private static Choice companySelector;
     private static MenuBar menuBar;
     private static Menu menuBarFile;
@@ -29,16 +32,26 @@ public class CompanyManagerGUI {
         selectedCompanyIndex = -1;
         companies = new ArrayList<Team>();
         roles = new String[]{
-            "Chief Technology Officer",
-            "VP of Engineering",
-            "Director of Software Development",
-            "Lead Architect",
-            "Manager of Software Development",
-            "Senior Software Engineer",
-            "Software Engineer",
-            "Associate Software Engineer",
-            "Intern Software Developer",
-            "QA Engineer"
+            "CEO",
+            "COO",
+            "CFO",
+            "Artificial Intelligence Developer",
+            "Cloud Engineer",
+            "Cybersecurity Analyst",
+            "Data Scientist",
+            "Full-Stack Developer",
+            "Web Designer",
+            "Front-End Developer",
+            "DevOps Engineer",
+            "Data scientist",
+            "Android engineer",
+            "Software sales rep ",
+            "Software product manager",
+            "Product marketing manager",
+            "Project manager",
+            "QA Tester",
+            "UX Designers",
+            "Digital Marketing",
         };
 
         // Create window
@@ -86,7 +99,24 @@ public class CompanyManagerGUI {
         // Employee
         employeePanel = new Panel();
         employeeLabel = new Label("No employee selected");
+        employeeControls = new Panel();
+        employeeControls.setLayout(new GridLayout(1, 1));
+        buttonFire = new Button("Fire") {
+            {
+                addActionListener(e -> {
+                    if (selectedEmployeeIndex != -1) {
+                        int id = companies.get(selectedCompanyIndex).getAllMembers()[selectedEmployeeIndex].getId();
+                        companies.get(selectedCompanyIndex).removeMember(id);
+                        selectedEmployeeIndex = -1;
+                        updateEmployeeList();
+                        updateEmployeePanel();
+                    }
+                });
+            }
+        };
+        employeeControls.add(buttonFire);
         employeePanel.add(employeeLabel);
+        employeePanel.add(employeeControls);
 
         // Right side
         employeeList = new List(10) {
@@ -143,6 +173,19 @@ public class CompanyManagerGUI {
                             updateCompanyPanel();
                         }
                     }
+                });
+            }
+        });
+        menuBarFile.add(new MenuItem("Clear") {
+            {
+                addActionListener(e -> {
+                    companies.clear();
+                    selectedCompanyIndex = -1;
+                    selectedEmployeeIndex = -1;
+                    updateCompanySelector();
+                    updateEmployeePanel();
+                    updateEmployeeList();
+                    updateCompanyPanel();
                 });
             }
         });
@@ -228,6 +271,7 @@ public class CompanyManagerGUI {
 
                     updateCompanySelector();
                     selectedCompanyIndex = companies.size() - 1;
+                    selectedEmployeeIndex = -1;
                     companySelector.select(selectedCompanyIndex);
                     updateEmployeeList();
                     updateCompanyPanel();
@@ -319,7 +363,7 @@ public class CompanyManagerGUI {
             label += "Company Info";
             label += "<br/><br/>ID: ";
             label += companies.get(selectedCompanyIndex).getId();
-            label += "<br/><br/>Name: ";
+            label += "<br/>Name: ";
             label += companies.get(selectedCompanyIndex).getName();
             label += "<br/>Number of Employees: ";
             label += companies.get(selectedCompanyIndex).getNumberOfEmployees();
